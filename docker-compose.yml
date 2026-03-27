@@ -1,0 +1,56 @@
+services:
+  antigravity:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VNC_PASSWORD: antigravity
+        USERNAME: developer
+    container_name: antigravity-ide
+    hostname: antigravity-dev
+
+    ports:
+      - "6080:6080"   # noVNC — http://localhost:6080/vnc.html
+      - "5900:5900"   # VNC client
+
+    environment:
+      - DISPLAY=:99
+      - RESOLUTION=1366x768x24
+      - TZ=Asia/Kolkata
+      - XDG_RUNTIME_DIR=/tmp/runtime-developer
+      - DONT_PROMPT_WSL_INSTALL=1
+      - ELECTRON_DISABLE_SANDBOX=1
+      - CHROME_DEVEL_SANDBOX=
+      - ELECTRON_NO_SANDBOX=1
+
+    shm_size: "2gb"
+
+    volumes:
+      - ./workspace:/home/developer/workspace
+      - antigravity-config:/home/developer/.config
+      - antigravity-data:/home/developer/.antigravity
+      - antigravity-cache:/home/developer/.cache
+
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 8G
+        reservations:
+          cpus: "2.0"
+          memory: 4G
+
+    restart: unless-stopped
+
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_ADMIN
+
+volumes:
+  antigravity-config:
+    name: antigravity-config
+  antigravity-data:
+    name: antigravity-data
+  antigravity-cache:
+    name: antigravity-cache
