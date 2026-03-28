@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   antigravity:
     build:
@@ -8,11 +10,9 @@ services:
         USERNAME: developer
     container_name: antigravity-ide
     hostname: antigravity-dev
-
     ports:
-      - "6080:6080"   # noVNC — http://localhost:6080/vnc.html
-      - "5900:5900"   # VNC client
-
+      - "6080:6080"
+      - "5900:5900"
     environment:
       - DISPLAY=:99
       - RESOLUTION=1366x768x24
@@ -22,15 +22,12 @@ services:
       - ELECTRON_DISABLE_SANDBOX=1
       - CHROME_DEVEL_SANDBOX=
       - ELECTRON_NO_SANDBOX=1
-
     shm_size: "2gb"
-
     volumes:
       - ./workspace:/home/developer/workspace
       - antigravity-config:/home/developer/.config
       - antigravity-data:/home/developer/.antigravity
       - antigravity-cache:/home/developer/.cache
-
     deploy:
       resources:
         limits:
@@ -39,9 +36,7 @@ services:
         reservations:
           cpus: "2.0"
           memory: 4G
-
     restart: unless-stopped
-
     security_opt:
       - seccomp:unconfined
     cap_add:
